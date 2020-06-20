@@ -17,7 +17,7 @@ Console program that monitors HTTP traffic.
   * [Documentation](#documentation)
 - [Improvements](#improvements)
 
-#Architecture
+# Architecture
 
 This program could have been realized in many different ways. This specific implementation
 adopts the following point of view: at the end of the day, we would like this app to be easily scalable, 
@@ -35,7 +35,7 @@ only explained in the comments of each function (which/how exactly stats are com
 are cleaned of the database...)
 
 
-##Agent
+## Agent
 
 The agent takes a .csv or a .txt file that contains log lines, opens it and read it,
 line by line, and sends the logs to the server every second via a POST request.  
@@ -43,7 +43,7 @@ Adopting a solution of this kind allows the agent to simulate a stream of logs t
 come, in a real-life situation, from the server that we want to monitor. It also allows 
 the program to go through the file only once.
 
-##Server
+## Server
 
 The server acts like a "platform" between all the services by exposing a REST service, 
 receiving the logs from the agent and sending them to the client.  
@@ -52,7 +52,7 @@ calculations, format data and communicate with a database. For this last point,
 it uses the library [peewee](http://docs.peewee-orm.com/en/latest/), a very simple and small 
 ORM, especially to define the models, run the queries and insert into the database.
 
-##Database
+## Database
 
 The MySQL database allows the program to keep stored the statistics and the logs in someplace
 else than the memory. If we consider the situation where we deal with high volumes of logs,
@@ -65,7 +65,7 @@ a certain delay (here, I decided to program the watcher to clean every second th
 we also don't want to store the logs permanently because the volume can be really high). The
 statistics, on the other hand, get stored permanently so the client can access them at any time.
 
-##Watcher
+## Watcher
 
 The watcher is a Python thread that watches every new second the database for 
 incoming logs from the agent.
@@ -76,7 +76,7 @@ every 10 seconds, on the last 10 seconds and last
 When it has been 2 minutes that the DB didn't receive any new log, the StatsComputer is shut
 down and the watcher resumes its activity.
 
-##Client
+## Client
 
  The client is a pretty straightforward NodeJS interface. I used it rather than Python because
  I found the console library much more complete, and [axios](https://www.npmjs.com/package/axios) is
@@ -87,12 +87,12 @@ down and the watcher resumes its activity.
  called [blessed](https://www.npmjs.com/package/blessed)
  
  
-#Usage
+# Usage
 
 You will need to install [Python (>=3.6)](https://www.python.org/) along with pip, [Node.js](https://nodejs.org), 
 [NPM](https://www.npmjs.com/) and docker-compose to run the app.
 
-##Install
+## Install
 To mount the database image, run the following code in the `server/` directory:
 ```bash
 sudo docker-compose up
@@ -119,14 +119,14 @@ python agent.py
 ```
 You can replace the log file by replacing it in the `agent/` directory.
 
-##Tests
+## Tests
 The alerting logic has been successfully tested.  
 You can find the unit test file in `server/monitor/test/agent.py`
 
-##Documentation
+## Documentation
 Although there is no proper documentation, all the important functions and classes have been commented.
 
-#Improvements
+# Improvements
 
 Here are some of the huge improvements I can think of:
 * **Scalability Logic**: As it has been said in the beginning of this document, this whole app has been thinked
